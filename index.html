@@ -807,7 +807,8 @@ Respond ONLY with a valid JSON object (no markdown fences, no extra text) with t
 
       const data = await response.json();
       const raw = data?.choices?.[0]?.message?.content || '';
-      const parsed = JSON.parse(raw);
+      const cleaned = raw.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/, '').trim();
+      const parsed = JSON.parse(cleaned);
       renderScope(parsed, businessName);
       showScope();
 
