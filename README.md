@@ -42,4 +42,4 @@ Alternatively, the included GitHub Actions workflow (`.github/workflows/deploy.y
 
 ---
 
-Built by **Rumman Chowdhury** — Technical Project Manager & Founder of Forma AI
+Built by **Rumman Riyaz** — Technical Project Manager & Founder of Forma AI
