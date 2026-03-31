@@ -113,7 +113,7 @@ header {
 #app-screen {
   display: flex;
   height: calc(100vh - 64px);
-  padding: 20px;
+  padding: 28px 32px;
   gap: 20px;
   overflow: hidden;
 }
@@ -123,7 +123,7 @@ header {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 20px;
-    padding: 20px;
+    padding: 28px 32px;
   }
 }
 
@@ -456,7 +456,7 @@ select option { background: #14213a; color: var(--text); }
 
 /* ---- Mobile ---- */
 @media (max-width: 767px) {
-  #app-screen { flex-direction: column; height: auto; padding: 12px; gap: 12px; }
+  #app-screen { flex-direction: column; height: auto; padding: 16px; gap: 16px; }
 }
 
 /* ---- Print ---- */
