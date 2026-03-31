@@ -5,7 +5,7 @@ import EmptyState from './components/EmptyState';
 import LoadingState from './components/LoadingState';
 import ScopeContent from './components/ScopeContent';
 
-const WORKER_URL = 'https://forma-ai-scoping-proxy.rumman-formaai.workers.dev';
+const WORKER_URL = import.meta.env.VITE_WORKER_URL || '';
 
 const SYSTEM_PROMPT = `You are a solutions consultant at Forma AI, an AI agency that delivers voice agents, AI receptionists, lead nurture automations, and AI content generation for small to medium businesses.
 
@@ -54,7 +54,7 @@ Timeline: ${timeline}`;
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           model: 'google/gemini-2.0-flash-001',
-          max_tokens: 1200,
+          max_tokens: 2000,
           messages: [
             { role: 'system', content: SYSTEM_PROMPT },
             { role: 'user',   content: userMessage   },
@@ -70,8 +70,9 @@ Timeline: ${timeline}`;
 
       const data  = await response.json();
       const raw   = data?.choices?.[0]?.message?.content || '';
-      const clean = raw.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/i, '').trim();
-      setScopeData(JSON.parse(clean));
+      const jsonMatch = raw.match(/\{[\s\S]*\}/);
+      if (!jsonMatch) throw new SyntaxError('No JSON object found in response');
+      setScopeData(JSON.parse(jsonMatch[0]));
 
     } catch (err) {
       setFormError(
