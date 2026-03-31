@@ -844,7 +844,7 @@ Respond ONLY with a valid JSON object (no markdown fences, no extra text) with t
 }`;
 
     const payload = {
-      model: 'deepseek/deepseek-v3:free',
+      model: 'deepseek/deepseek-r1-distill-llama-70b:free',
       max_tokens: 1500,
       messages: [
         { role: 'system', content: systemPrompt },
