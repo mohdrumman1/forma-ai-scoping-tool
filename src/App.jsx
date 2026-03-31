@@ -53,8 +53,8 @@ Timeline: ${timeline}`;
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          model: 'anthropic/claude-sonnet-4-5',
-          max_tokens: 1500,
+          model: 'google/gemini-2.0-flash-001',
+          max_tokens: 1200,
           messages: [
             { role: 'system', content: SYSTEM_PROMPT },
             { role: 'user',   content: userMessage   },
