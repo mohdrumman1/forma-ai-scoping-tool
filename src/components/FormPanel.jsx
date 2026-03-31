@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-export default function FormPanel({ onGenerate, onChangeKey, formError, loading }) {
+export default function FormPanel({ onGenerate, formError, loading }) {
   const [businessName, setBusinessName] = useState('');
   const [industry, setIndustry]         = useState('');
   const [problem, setProblem]           = useState('');
@@ -79,9 +79,6 @@ export default function FormPanel({ onGenerate, onChangeKey, formError, loading 
         {loading ? 'Generating…' : 'Generate Scope'}
       </button>
 
-      <div className="key-change">
-        Using the wrong key? <a onClick={onChangeKey}>Change API Key</a>
-      </div>
     </div>
   );
 }

@@ -1,10 +1,11 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Header from './components/Header';
-import ApiKeyScreen from './components/ApiKeyScreen';
 import FormPanel from './components/FormPanel';
 import EmptyState from './components/EmptyState';
 import LoadingState from './components/LoadingState';
 import ScopeContent from './components/ScopeContent';
+
+const WORKER_URL = 'https://forma-ai-scoping-proxy.rumman-formaai.workers.dev';
 
 const SYSTEM_PROMPT = `You are a solutions consultant at Forma AI, an AI agency that delivers voice agents, AI receptionists, lead nurture automations, and AI content generation for small to medium businesses.
 
@@ -25,41 +26,10 @@ Respond ONLY with a valid JSON object (no markdown fences, no extra text) with t
 }`;
 
 export default function App() {
-  const [apiKey, setApiKey]           = useState('');
-  const [screen, setScreen]           = useState('api'); // 'api' | 'app'
-  const [loading, setLoading]         = useState(false);
-  const [scopeData, setScopeData]     = useState(null);
+  const [loading, setLoading]           = useState(false);
+  const [scopeData, setScopeData]       = useState(null);
   const [businessName, setBusinessName] = useState('');
-  const [formError, setFormError]     = useState('');
-
-  // On mount: check env var, then sessionStorage
-  useEffect(() => {
-    const envKey = import.meta.env.VITE_API_KEY;
-    if (envKey?.startsWith('sk-')) {
-      setApiKey(envKey);
-      setScreen('app');
-      return;
-    }
-    const stored = sessionStorage.getItem('forma_api_key');
-    if (stored?.startsWith('sk-')) {
-      setApiKey(stored);
-      setScreen('app');
-    }
-  }, []);
-
-  function handleKeySubmit(key) {
-    setApiKey(key);
-    sessionStorage.setItem('forma_api_key', key);
-    setScreen('app');
-  }
-
-  function handleChangeKey() {
-    setApiKey('');
-    sessionStorage.removeItem('forma_api_key');
-    setScopeData(null);
-    setFormError('');
-    setScreen('api');
-  }
+  const [formError, setFormError]       = useState('');
 
   async function handleGenerate({ businessName: bName, industry, problem, budget, timeline }) {
     if (!bName || !industry || !problem || !budget || !timeline) {
@@ -79,14 +49,9 @@ Budget range: ${budget}
 Timeline: ${timeline}`;
 
     try {
-      const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+      const response = await fetch(WORKER_URL, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${apiKey}`,
-          'HTTP-Referer': 'https://mohdrumman1.github.io/forma-ai-scoping-tool/',
-          'X-Title': 'Forma AI Scoping Tool',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           model: 'anthropic/claude-sonnet-4-5',
           max_tokens: 1500,
@@ -99,11 +64,7 @@ Timeline: ${timeline}`;
 
       if (!response.ok) {
         const errData = await response.json().catch(() => ({}));
-        setFormError(
-          response.status === 401
-            ? 'Invalid API key. Check your key and try again.'
-            : errData?.error?.message || `API error (${response.status}). Please try again.`
-        );
+        setFormError(errData?.error?.message || 'API error (' + response.status + '). Please try again.');
         return;
       }
 
@@ -126,26 +87,20 @@ Timeline: ${timeline}`;
   return (
     <>
       <Header />
-
-      {screen === 'api' ? (
-        <ApiKeyScreen onSubmit={handleKeySubmit} />
-      ) : (
-        <div id="app-screen">
-          <FormPanel
-            onGenerate={handleGenerate}
-            onChangeKey={handleChangeKey}
-            formError={formError}
-            loading={loading}
-          />
-          <div id="output-panel">
-            {!loading && !scopeData && <EmptyState />}
-            <LoadingState isLoading={loading} />
-            {!loading && scopeData && (
-              <ScopeContent data={scopeData} businessName={businessName} />
-            )}
-          </div>
+      <div id="app-screen">
+        <FormPanel
+          onGenerate={handleGenerate}
+          formError={formError}
+          loading={loading}
+        />
+        <div id="output-panel">
+          {!loading && !scopeData && <EmptyState />}
+          <LoadingState isLoading={loading} />
+          {!loading && scopeData && (
+            <ScopeContent data={scopeData} businessName={businessName} />
+          )}
         </div>
-      )}
+      </div>
     </>
   );
 }
