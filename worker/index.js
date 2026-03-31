@@ -9,6 +9,8 @@ const ALLOWED_ORIGINS = [
   'https://mohdrumman1.github.io',
   'https://formaai.com.au',
   'https://www.formaai.com.au',
+  'http://localhost:5173',
+  'http://localhost:4173',
 ];
 
 function corsHeaders(origin) {
@@ -56,7 +58,7 @@ export default {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${env.OPENROUTER_API_KEY}`,
-        'HTTP-Referer': 'https://formaai.com.au',
+        'HTTP-Referer': 'https://mohdrumman1.github.io/forma-ai-scoping-tool/',
         'X-Title': 'Forma AI Scoping Tool',
       },
       body: JSON.stringify(body),
