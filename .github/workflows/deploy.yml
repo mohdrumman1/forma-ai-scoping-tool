@@ -37,6 +37,7 @@ jobs:
   build-and-deploy:
     name: Build and Deploy to GitHub Pages
     needs: deploy-worker
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     permissions:
       contents: read
