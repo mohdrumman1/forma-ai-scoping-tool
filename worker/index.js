@@ -7,6 +7,7 @@
 
 const ALLOWED_ORIGINS = [
   'https://mohdrumman1.github.io',
+  'https://scoping.formaai.info',
   'https://formaai.com.au',
   'https://www.formaai.com.au',
   'http://localhost:5173',
